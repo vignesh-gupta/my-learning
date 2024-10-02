@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import * as dat from "lil-gui";
 
 // Scene, Camera
 const scene = new THREE.Scene();
@@ -20,8 +21,8 @@ scene.add(directionalLight);
 const ambient = new THREE.AmbientLight(0x404040); // soft white light - AmbientLight is uniform light all over the scene
 scene.add(ambient);
 
-const pointLight = new THREE.PointLight(0xff0000, 1, 100); // PointLight is a light that gets emitted from a single point in all directions
-pointLight.position.set(0, 5, 0);
+const pointLight = new THREE.PointLight(0xffffff, 30, 1000); // PointLight is a light that gets emitted from a single point in all directions
+pointLight.position.set(0, 6, 0);
 scene.add(pointLight);
 
 // Light Helper
@@ -106,3 +107,39 @@ window.addEventListener("resize", () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
+
+// Lil GUI
+const gui = new dat.GUI();
+
+// Material settings
+const materialFolder = gui.addFolder("Material");
+materialFolder.add(material, "roughness", 0, 1).name("Roughness");
+materialFolder.add(material, "metalness", 0, 1).name("Metalness");
+materialFolder.addColor(material, "color").name("Color");
+materialFolder.open();
+
+// Mesh settings
+const meshFolder = gui.addFolder("Mesh");
+meshFolder.add(cylinder.position, "x", -3, 3).name("Position X");
+meshFolder.add(cylinder.position, "y", -3, 3).name("Position Y");
+meshFolder.add(cylinder.position, "z", -3, 3).name("Position Z");
+meshFolder.add(cylinder.rotation, "x", -Math.PI, Math.PI).name("Rotation X");
+meshFolder.add(cylinder.rotation, "y", -Math.PI, Math.PI).name("Rotation Y");
+meshFolder.add(cylinder.rotation, "z", -Math.PI, Math.PI).name("Rotation Z");
+
+// Light settings
+const directionalLightFolder = gui.addFolder("Directional Light");
+directionalLightFolder.add(directionalLight.position, "x", -10, 10).name("Directional X");
+directionalLightFolder.add(directionalLight.position, "y", -10, 10).name("Directional Y");
+directionalLightFolder.add(directionalLight.position, "z", -10, 10).name("Directional Z");
+directionalLightFolder
+  .add(directionalLight, "intensity", 0, 10)
+  .name("Directional Intensity");
+directionalLightFolder.addColor(directionalLight, "color").name("Directional Color");
+
+const pointLightFolder = gui.addFolder("Point Light");
+pointLightFolder.add(pointLight.position, "x", -10, 10).name("Point X");
+pointLightFolder.add(pointLight.position, "y", -10, 10).name("Point Y");
+pointLightFolder.add(pointLight.position, "z", -10, 10).name("Point Z");
+pointLightFolder.add(pointLight, "intensity", 0, 100).name("Point Intensity");
+pointLightFolder.addColor(pointLight, "color").name("Point Color");
