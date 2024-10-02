@@ -13,10 +13,33 @@ camera.position.z = 5;
 scene.add(camera);
 
 // Cube - BoxGeometry
-const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: "red" });
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
+// const box = new THREE.BoxGeometry(1, 1, 1);
+// const material = new THREE.MeshBasicMaterial({ color: "red" });
+// const cube = new THREE.Mesh(box, material);
+// scene.add(cube);
+
+// Sphere - SphereGeometry
+// const geometry = new THREE.SphereGeometry(1, 10, 10); // radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength
+// // phiStart - the angle to start the sphere in the x-z plane
+// // phiLength - the angle to sweep the sphere out of the x-z plane
+// // thetaStart - the angle to start the sphere in the y-z plane
+// // thetaLength - the angle to sweep the sphere out of the y-z plane
+
+// const material = new THREE.MeshBasicMaterial({
+//   color: 0xffff00,
+//   wireframe: true,
+// });
+// const sphere = new THREE.Mesh(geometry, material);
+// scene.add(sphere);
+
+// Cylinder - CylinderGeometry
+const geometry = new THREE.CylinderGeometry(1, 1, 2, 10, 10, true, 0, Math.PI );
+const material = new THREE.MeshBasicMaterial({
+  color: 0xffff00,
+  side: THREE.DoubleSide,
+});
+const cylinder = new THREE.Mesh(geometry, material);
+scene.add(cylinder);
 
 // Renderer
 const canvas = document.querySelector("canvas");
@@ -31,7 +54,7 @@ controls.dampingFactor = 0.01; // Inertia of the camera movement and lower the v
 controls.enableDamping = true;
 controls.autoRotate = true;
 
-const clock = new THREE.Clock(); // Clock is used to get the time elapsed since the page loaded
+// const clock = new THREE.Clock(); // Clock is used to get the time elapsed since the page loaded
 
 // Animation Loop
 function animate() {
