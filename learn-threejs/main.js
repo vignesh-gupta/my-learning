@@ -12,6 +12,30 @@ const camera = new THREE.PerspectiveCamera(
 camera.position.z = 5;
 scene.add(camera);
 
+// Lighting 
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 ); // DirectionalLight is a light that gets emitted in a specific direction
+directionalLight.position.set( 5,10, 7.5 ); // x, y, z
+scene.add( directionalLight );
+
+const ambient = new THREE.AmbientLight( 0x404040 ); // soft white light - AmbientLight is uniform light all over the scene
+scene.add( ambient );
+
+const pointLight = new THREE.PointLight( 0xff0000, 1, 100 );
+pointLight.position.set( 0,5,0 );
+scene.add( pointLight );
+
+// Light Helper
+
+const directionalLightHelper = new THREE.DirectionalLightHelper( directionalLight, 5 );
+scene.add( directionalLightHelper );
+
+const pointLightHelper = new THREE.PointLightHelper( pointLight, 5 );
+scene.add( pointLightHelper );
+
+// const ambientLightHelper = new THREE.AmbientLightHelper( ambient, 5 );
+// scene.add( ambientLightHelper );
+
+
 // Cube - BoxGeometry
 // const box = new THREE.BoxGeometry(1, 1, 1);
 // const material = new THREE.MeshBasicMaterial({ color: "red" });
@@ -33,7 +57,7 @@ scene.add(camera);
 // scene.add(sphere);
 
 // Cylinder - CylinderGeometry
-const geometry = new THREE.CylinderGeometry(1, 1, 2, 10, 10, true, 0, Math.PI );
+const geometry = new THREE.CylinderGeometry(1, 1, 2, 10, 10 );
 const material = new THREE.MeshBasicMaterial({
   color: 0xffff00,
   side: THREE.DoubleSide,
