@@ -17,23 +17,25 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Directional
 directionalLight.position.set(5, 10, 7.5); // x, y, z
 scene.add(directionalLight);
 
-const ambient = new THREE.AmbientLight( 0x404040 ); // soft white light - AmbientLight is uniform light all over the scene
-scene.add( ambient );
+const ambient = new THREE.AmbientLight(0x404040); // soft white light - AmbientLight is uniform light all over the scene
+scene.add(ambient);
 
 const pointLight = new THREE.PointLight(0xff0000, 1, 100); // PointLight is a light that gets emitted from a single point in all directions
-pointLight.position.set(0,5,0);
+pointLight.position.set(0, 5, 0);
 scene.add(pointLight);
 
 // Light Helper
-
 const directionalLightHelper = new THREE.DirectionalLightHelper(
   directionalLight,
   5
 );
 scene.add(directionalLightHelper);
 
-const pointLightHelper = new THREE.PointLightHelper( pointLight, 5 );
-scene.add( pointLightHelper );
+const pointLightHelper = new THREE.PointLightHelper(pointLight, 5);
+scene.add(pointLightHelper);
+
+// Texture loader
+const textureLoader = new THREE.TextureLoader();
 
 // const ambientLightHelper = new THREE.AmbientLightHelper( ambient, 5 );
 // scene.add( ambientLightHelper );
@@ -61,7 +63,11 @@ scene.add( pointLightHelper );
 // Cylinder - CylinderGeometry
 const geometry = new THREE.CylinderGeometry(1, 1, 2, 10, 10);
 const material = new THREE.MeshStandardMaterial({
-  color: 0xffff00,
+  map: textureLoader.load("./textures/color.jpg"),
+  roughnessMap: textureLoader.load("./textures/roughness.jpg"),
+  normalMap: textureLoader.load("./textures/normal.png"),
+  displacementMap: textureLoader.load("./textures/height.png"),
+  displacementScale: 0.001,
 });
 const cylinder = new THREE.Mesh(geometry, material);
 scene.add(cylinder);
