@@ -1,16 +1,16 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import * as dat from "lil-gui";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 // Scene, Camera
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+  65,
+  window.innerWidth / window.innerHeight
 );
-camera.position.z = 5;
+camera.position.set(0, 3, 5);
 scene.add(camera);
 
 // Lighting
@@ -26,17 +26,17 @@ pointLight.position.set(0, 6, 0);
 scene.add(pointLight);
 
 // Light Helper
-const directionalLightHelper = new THREE.DirectionalLightHelper(
-  directionalLight,
-  5
-);
-scene.add(directionalLightHelper);
+// const directionalLightHelper = new THREE.DirectionalLightHelper(
+//   directionalLight,
+//   5
+// );
+// scene.add(directionalLightHelper);
 
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 5);
-scene.add(pointLightHelper);
+// const pointLightHelper = new THREE.PointLightHelper(pointLight, 5);
+// scene.add(pointLightHelper);
 
 // Texture loader
-const textureLoader = new THREE.TextureLoader();
+// const textureLoader = new THREE.TextureLoader();
 
 // const ambientLightHelper = new THREE.AmbientLightHelper( ambient, 5 );
 // scene.add( ambientLightHelper );
@@ -62,21 +62,42 @@ const textureLoader = new THREE.TextureLoader();
 // scene.add(sphere);
 
 // Cylinder - CylinderGeometry
-const geometry = new THREE.CylinderGeometry(1, 1, 2, 10, 10);
-const material = new THREE.MeshStandardMaterial({
-  map: textureLoader.load("./textures/color.jpg"),
-  roughnessMap: textureLoader.load("./textures/roughness.jpg"),
-  normalMap: textureLoader.load("./textures/normal.png"),
-  displacementMap: textureLoader.load("./textures/height.png"),
-  displacementScale: 0.001,
+// const geometry = new THREE.CylinderGeometry(1, 1, 2, 10, 10);
+// const material = new THREE.MeshStandardMaterial({
+//   map: textureLoader.load("./textures/color.jpg"),
+//   roughnessMap: textureLoader.load("./textures/roughness.jpg"),
+//   normalMap: textureLoader.load("./textures/normal.png"),
+//   displacementMap: textureLoader.load("./textures/height.png"),
+//   displacementScale: 0.001,
+// });
+// const cylinder = new THREE.Mesh(geometry, material);
+// scene.add(cylinder);
+
+// Load scene from HDRIs'
+const rgbeLoader = new RGBELoader();
+rgbeLoader.load("/lilienstein_1k.hdr", (texture) => {
+  texture.mapping = THREE.EquirectangularReflectionMapping;
+  scene.background = texture;
+  scene.environment = texture;
 });
-const cylinder = new THREE.Mesh(geometry, material);
-scene.add(cylinder);
+
+// Load GLTF model
+let gltfModel;
+const gltfLoader = new GLTFLoader();
+gltfLoader.load("/wooden_bag.glb", (gltf) => {
+  gltfModel = gltf.scene;
+  gltf.scene.position.set(0, -5, -30);
+  scene.add(gltf.scene);
+});
 
 // Renderer
 const canvas = document.querySelector("canvas");
-const renderer = new THREE.WebGLRenderer({ canvas });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1;
+renderer.outputEncoding = THREE.sRGBEncoding;
 
 renderer.render(scene, camera);
 
@@ -84,7 +105,7 @@ renderer.render(scene, camera);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.dampingFactor = 0.01; // Inertia of the camera movement and lower the value, the slower the camera movement
 controls.enableDamping = true;
-controls.autoRotate = true;
+// controls.autoRotate = true;
 
 // const clock = new THREE.Clock(); // Clock is used to get the time elapsed since the page loaded
 
@@ -92,6 +113,10 @@ controls.autoRotate = true;
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
+
+  if (gltfModel) {
+    gltfModel.rotation.y += 0.01;
+  }
 
   // cube.rotation.x = clock.getElapsedTime();
   // cube.rotation.y = clock.getElapsedTime();
@@ -112,30 +137,38 @@ window.addEventListener("resize", () => {
 const gui = new dat.GUI();
 
 // Material settings
-const materialFolder = gui.addFolder("Material");
-materialFolder.add(material, "roughness", 0, 1).name("Roughness");
-materialFolder.add(material, "metalness", 0, 1).name("Metalness");
-materialFolder.addColor(material, "color").name("Color");
-materialFolder.open();
+// const materialFolder = gui.addFolder("Material");
+// materialFolder.add(material, "roughness", 0, 1).name("Roughness");
+// materialFolder.add(material, "metalness", 0, 1).name("Metalness");
+// materialFolder.addColor(material, "color").name("Color");
+// materialFolder.open();
 
 // Mesh settings
-const meshFolder = gui.addFolder("Mesh");
-meshFolder.add(cylinder.position, "x", -3, 3).name("Position X");
-meshFolder.add(cylinder.position, "y", -3, 3).name("Position Y");
-meshFolder.add(cylinder.position, "z", -3, 3).name("Position Z");
-meshFolder.add(cylinder.rotation, "x", -Math.PI, Math.PI).name("Rotation X");
-meshFolder.add(cylinder.rotation, "y", -Math.PI, Math.PI).name("Rotation Y");
-meshFolder.add(cylinder.rotation, "z", -Math.PI, Math.PI).name("Rotation Z");
+// const meshFolder = gui.addFolder("Mesh");
+// meshFolder.add(cylinder.position, "x", -3, 3).name("Position X");
+// meshFolder.add(cylinder.position, "y", -3, 3).name("Position Y");
+// meshFolder.add(cylinder.position, "z", -3, 3).name("Position Z");
+// meshFolder.add(cylinder.rotation, "x", -Math.PI, Math.PI).name("Rotation X");
+// meshFolder.add(cylinder.rotation, "y", -Math.PI, Math.PI).name("Rotation Y");
+// meshFolder.add(cylinder.rotation, "z", -Math.PI, Math.PI).name("Rotation Z");
 
 // Light settings
 const directionalLightFolder = gui.addFolder("Directional Light");
-directionalLightFolder.add(directionalLight.position, "x", -10, 10).name("Directional X");
-directionalLightFolder.add(directionalLight.position, "y", -10, 10).name("Directional Y");
-directionalLightFolder.add(directionalLight.position, "z", -10, 10).name("Directional Z");
+directionalLightFolder
+  .add(directionalLight.position, "x", -10, 10)
+  .name("Directional X");
+directionalLightFolder
+  .add(directionalLight.position, "y", -10, 10)
+  .name("Directional Y");
+directionalLightFolder
+  .add(directionalLight.position, "z", -10, 10)
+  .name("Directional Z");
 directionalLightFolder
   .add(directionalLight, "intensity", 0, 10)
   .name("Directional Intensity");
-directionalLightFolder.addColor(directionalLight, "color").name("Directional Color");
+directionalLightFolder
+  .addColor(directionalLight, "color")
+  .name("Directional Color");
 
 const pointLightFolder = gui.addFolder("Point Light");
 pointLightFolder.add(pointLight.position, "x", -10, 10).name("Point X");
