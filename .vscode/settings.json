@@ -1,9 +1,11 @@
 {
   "conventionalCommits.scopes": [
-    "threejs"
+    "threejs",
+    "go"
   ],
   "cSpell.words": [
     "Equirectangular",
-    "RGBE"
+    "RGBE",
+    "vals"
   ]
 }
