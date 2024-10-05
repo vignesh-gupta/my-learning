@@ -18,6 +18,7 @@ var stateName = map[ServerState]string{
 	StateRetrying:  "retrying",
 }
 
+// Overriding the String method to return the string representation of the state instead of the integer value
 func (ss ServerState) String() string {
 	return stateName[ss]
 }
